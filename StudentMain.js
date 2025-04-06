@@ -1,7 +1,7 @@
 import {  getComputedSyllabus, addCompleteSyllabusToStudent, getTodaysTopics, getNotes, UpdateTopics, getCompletedRevision, addCompleteRevisiomToStudent } from "./script.js";
 import { formatMarkdownToHTML } from "./ChatBotscript.js";
 
-    const StudentId = "24L35A4306"; // Replace with the actual student ID
+    const StudentId = "24L35A4309"; // Replace with the actual student ID
     const collegeName = "Viit"; // Replace with the actual college name
     const branchName = "AI"; // Replace with the actual branch name
     let mainDiv = document.getElementById("mainDiv");
@@ -137,13 +137,12 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
             try {
                 let prompt = topicContent + 
                 'By the topic Generate 3 multiple choice questions in JSON format only. Each question should have the question number as the key (e.g., "1", "2", "3") and include a "question" field, an "options" field with 4 choices, and a "correct_answer" field. Return only the JSON in the following structure: { "1": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" }, "2": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" }, "3": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" } }';
-                
+
                 let mcp = await getNotes(prompt);
                 mcp = mcp.replace("```json", '');
                 mcp = mcp.replace("```", '');
-                console.log(mcp);
+                console.log(mcp);   
                 mcp = JSON.parse(mcp);
-                console.log(mcp);
                 noteContent.innerHTML = "";
                 for (const [key, value] of Object.entries(mcp)) {
                     console.log(key, value);
@@ -286,6 +285,10 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
                     loadingPopup.style.display = "none";
                     popup2.style.display = "none";
                     divToRemove.style.display = "none";
+                    currentPage = 0;
+                    loadingPopup.style.display = "block";
+                    await loadTadaysTopics(collegeName, branchName, StudentId, date);
+                    showTopicsToRevision();
                 });
                 
                 
@@ -308,7 +311,14 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
 
     function ShowAllTopics(AllTopics) {
         mainDiv.innerHTML = "";
-        mainDiv.innerHTML = `<h2></>Select the topic you want to read</h2>`
+        mainDiv.innerHTML = `<h2>Today's Classes</h2>`
+
+        if ( AllTopics === ''){
+            let p = document.createElement("p");
+            p.textContent = "There is no lessons for today";
+            mainDiv.appendChild(p);
+            return;
+        }
 
         for (const [key, value] of AllTopics) {
             
@@ -329,6 +339,11 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
                 popup.style.display = "block";
                 overlay.style.display = "block";
                 innerpopup.innerHTML = "";
+                if (value === null) {
+                    let p = document.createElement("p");
+                    p.textContent = "You Complete all Topics";
+                    innerpopup.appendChild(p);
+                }
                 for ( const lesson of Object.keys(value) )
                 {
                     const LessonViseDiv = document.createElement("div");
@@ -342,9 +357,12 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
                     LessonViseDiv.appendChild(h4);
                     LessonViseDiv.appendChild(hrInLessonViseDiv);
                     innerpopup.appendChild(LessonViseDiv);
-                    let topics = value[lesson].split(",");
-
-                    
+                    let topics = value[lesson] ? value[lesson].split(",").map(t => t.trim()).filter(t => t !== ''): [];
+                    if ( topics.length === 0 ) {
+                        let p = document.createElement("p");
+                        p.textContent = "You Complete all Topics";
+                        LessonViseDiv.appendChild(p);
+                    }
                     showTopics(topics, key, lesson);
 
                     console.log(topics);
