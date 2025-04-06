@@ -136,8 +136,7 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
     
             try {
                 let prompt = topicContent + 
-                    " Check the above paragraph and generate a 3 multiple choice question in json format only. " +
-                    "Each question should have 4 options. The question number will be the key, and other attributes will be: question, options, correct answer *NOTE*: return only the json format. ";
+                'By the topic Generate 3 multiple choice questions in JSON format only. Each question should have the question number as the key (e.g., "1", "2", "3") and include a "question" field, an "options" field with 4 choices, and a "correct_answer" field. Return only the JSON in the following structure: { "1": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" }, "2": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" }, "3": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" } }'.
                 let mcp = await getNotes(prompt);
                 mcp = mcp.replace("```json", '');
                 mcp = mcp.replace("```", '');
