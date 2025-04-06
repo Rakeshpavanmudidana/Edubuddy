@@ -136,11 +136,14 @@ import { formatMarkdownToHTML } from "./ChatBotscript.js";
     
             try {
                 let prompt = topicContent + 
-                'By the topic Generate 3 multiple choice questions in JSON format only. Each question should have the question number as the key (e.g., "1", "2", "3") and include a "question" field, an "options" field with 4 choices, and a "correct_answer" field. Return only the JSON in the following structure: { "1": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" }, "2": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" }, "3": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" } }'.
+                'By the topic Generate 3 multiple choice questions in JSON format only. Each question should have the question number as the key (e.g., "1", "2", "3") and include a "question" field, an "options" field with 4 choices, and a "correct_answer" field. Return only the JSON in the following structure: { "1": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" }, "2": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" }, "3": { "question": "Your question here?", "options": ["Option A", "Option B", "Option C", "Option D"], "correct_answer": "Correct Option" } }';
+                
                 let mcp = await getNotes(prompt);
                 mcp = mcp.replace("```json", '');
                 mcp = mcp.replace("```", '');
+                console.log(mcp);
                 mcp = JSON.parse(mcp);
+                console.log(mcp);
                 noteContent.innerHTML = "";
                 for (const [key, value] of Object.entries(mcp)) {
                     console.log(key, value);
